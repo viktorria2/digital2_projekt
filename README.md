@@ -1,2 +1,15 @@
-# digital2_projekt
-The repository for project, DE2 subject
+# Digital Electronics 2 project
+
+### Team members
+
+* 
+* 
+* 
+
+## Teoretický úvod a cíl projektu
+
+## Hardware description of demo application
+
+## Softwarove bloky
+
+## References
