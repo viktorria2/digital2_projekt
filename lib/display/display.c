@@ -1,3 +1,4 @@
+
 #include "display.h"
 
 void recordingTable() {
@@ -79,7 +80,19 @@ void deleteRecord() {
     oled_display();  
 }
 
-void displayTable(char delky[8]) {
+void deleted() {
+    oled_clrscr();  
+    oled_gotoxy(0, 0);
+    oled_puts("Deleted successfully");
+    oled_display(); 
+}
+
+void initSystem() {
+    oled_init(OLED_DISP_ON);
+    oled_clrscr();
+}
+
+void displayTable(uint8_t delky[8]) {
     char string[3];
     for (uint8_t i = 0; i < 8; i++) {
         uint8_t row = i / 2;  
@@ -92,17 +105,4 @@ void displayTable(char delky[8]) {
         oled_puts(string);
     }
     oled_display();  
-}
-
-void deleted() {
-    oled_clrscr();  
-    oled_gotoxy(0, 0);
-    oled_puts("Deleted successfully");
-    oled_display(); 
-}
-
-void initSystem() {
-    oled_init(OLED_DISP_ON);
-    oled_clrscr();
-    sei();  
 }
