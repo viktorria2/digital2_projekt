@@ -1,3 +1,4 @@
+
 /*
  * I2C/TWI library for AVR-GCC.
  * (c) 2018-2024 Tomas Fryza, MIT license
