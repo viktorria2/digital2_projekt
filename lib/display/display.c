@@ -79,6 +79,21 @@ void deleteRecord() {
     oled_display();  
 }
 
+void displayTable(char delky[8]) {
+    char string[3];
+    for (uint8_t i = 0; i < 8; i++) {
+        uint8_t row = i / 2;  
+        uint8_t col = i % 2;
+        
+        oled_gotoxy(col * 96, row + 1);  
+        oled_putc('0' + (i + 1));  
+        oled_puts(": ");
+        itoa(delky[i],string, 10);
+        oled_puts(string);
+    }
+    oled_display();  
+}
+
 void deleted() {
     oled_clrscr();  
     oled_gotoxy(0, 0);
