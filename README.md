@@ -19,7 +19,7 @@ AVR je rodina mikrokontrolérů vyvinutá společností Atmel, jsou široce pou�
 I2C je sériový komunikační protokol používaný pro přenos dat mezi mikrokontrolérem a periferními zařízeními, jako jsou senzory, displeje nebo paměťové moduly.
 ## Hardware description of demo application
 Během daného projektu byl využit mikročip ATmega328P, deska Arduino Uno, obrazovka I2C OLED a xylofon. Xylofonová deska se skládá z dotykových sensorů (kláves), kde každému tlačítku je přirazen konkrétní ton.  Xylofon je napojen zdrojem napětí 24VDC.
-![digital2_projekt](images/xylofon.png)
+![digital2_projekt](images/xylofon.jpg)
 ## Využité knihovny
 •	OLED (soubory: font.h, oled.c, oled.h) – knihovna ke kontrole obrazovky OLED;
 •	DISPLAY (soubory: display.h, display.c) - obsahuje funkce, které zajišťují uživatelské rozhraní zobrazované na OLED displeji;
