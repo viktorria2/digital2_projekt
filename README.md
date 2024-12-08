@@ -1,6 +1,7 @@
 # Digitální elektronika 2 projekt
 
 ## Elektronicky ovládaný xylofon
+![digital2_projekt](images/zapojeni.png)
 
 ### Team members
 
@@ -17,7 +18,8 @@ Tento projekt je zaměřen na návrh a realizaci elektronického xylofonu využ�
 AVR je rodina mikrokontrolérů vyvinutá společností Atmel, jsou široce používány v embedded systémech, vývojářských projektech a elektronických zařízeních díky své nízké ceně, flexibilitě a snadnému programování. Má oddelenou paměť pro program a data. Periferie mikrokontroleru jsou vstupní a výstupní piny, AD/DA převodníky, časovače a komunikační rozhrání UART.
 I2C je sériový komunikační protokol používaný pro přenos dat mezi mikrokontrolérem a periferními zařízeními, jako jsou senzory, displeje nebo paměťové moduly.
 ## Hardware description of demo application
-Během daného projektu byl využit mikročip ATmega328P, deska Arduino Uno, obrazovka I2C OLED a xylofon. Xylofonová deska se skládá z dotykových sensorů (kláves), kde každému tlačítku je přirazen konkrétní ton.  Xylofon je napojen zdrojem napětí 24VDC. 
+Během daného projektu byl využit mikročip ATmega328P, deska Arduino Uno, obrazovka I2C OLED a xylofon. Xylofonová deska se skládá z dotykových sensorů (kláves), kde každému tlačítku je přirazen konkrétní ton.  Xylofon je napojen zdrojem napětí 24VDC.
+![digital2_projekt](images/xylofon.png)
 ## Využité knihovny
 •	OLED (soubory: font.h, oled.c, oled.h) – knihovna ke kontrole obrazovky OLED;
 •	DISPLAY (soubory: display.h, display.c) - obsahuje funkce, které zajišťují uživatelské rozhraní zobrazované na OLED displeji;
