@@ -14,7 +14,7 @@ Vytvořte elektronický xylofon, na který se dá hrát pomocí AVR mikrokontrol
 ## Hardware description of demo application
 
 ## Softwarove bloky
-![digital2_projekt](images/diagram.png)
+![digital2_projekt](images/scheme.png)
 ## References
 
 ## Video
