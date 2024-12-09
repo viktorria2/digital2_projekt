@@ -22,11 +22,11 @@ Během daného projektu byl využit mikročip ATmega328P, deska Arduino Uno, obr
 ![digital2_projekt](images/xylofon.jpg)
 ![digital2_projekt](images/xylophone_board.svg)
 ## Využité knihovny
-•	OLED (soubory: font.h, oled.c, oled.h) – knihovna ke kontrole obrazovky OLED;
-•	DISPLAY (soubory: display.h, display.c) - obsahuje funkce, které zajišťují uživatelské rozhraní zobrazované na OLED displeji;
-•	EEPROM (soubory: eeprom.h, eeprom.c) – slouží k ukládaní a načítaní dat;
-•	TWI (soubory: twi.h, twi.c) – knihovna ke komunikaci s periferii pomocí mikrokontroleru;
-•	UART (soubory: uart.h, uart.c) – knihovna ke komunikaci s UART.
+-	OLED (soubory: font.h, oled.c, oled.h) – knihovna ke kontrole obrazovky OLED;
+-	DISPLAY (soubory: display.h, display.c) - obsahuje funkce, které zajišťují uživatelské rozhraní zobrazované na OLED displeji;
+-	EEPROM (soubory: eeprom.h, eeprom.c) – slouží k ukládaní a načítaní dat;
+-	TWI (soubory: twi.h, twi.c) – knihovna ke komunikaci s periferii pomocí mikrokontroleru;
+-	UART (soubory: uart.h, uart.c) – knihovna ke komunikaci s UART.
 ## Softwarové bloky
 ![digital2_projekt](images/scheme.png)
 ### Inicializace 
@@ -185,9 +185,10 @@ if(mode != 1){                //a jestliže to mód vyžaduje
   }
 }
 ``` 
-###TIMER1_OVF_vect
-Timer1 je časovačem na mikrokontroleru AVR. Pomoci téhle časti se provádí debouncing tlačítek, sledovaní jejích stavů a řízení vzorkování.
+### TIMER1_OVF_vect
+Timer1 implementuje přerušení TIMER1_OVF_vect pro mikrokontrolér AVR. Přerušení se spustí při přetečení časovače TIMER1. Hlavním úkolem kódu je debouncing tlačítek a jednoduchý časovač.
 Debouncing: 
+Cílem je eliminovat náhodné rušení při stisknutí tlačítka, známé jako "debouncing". Kód používá tři proměnné: first, second, a third, které uchovávají poslední tři stavy tlačítek. Starší stavy tlačítek se posunou.
 ```C
 // debouncing prvnich osmi tlacitek
   third = second;
@@ -213,18 +214,61 @@ cycle++;
   }
 }
 ```
-### Inicializace tlačítek na obrazovce
+### EEPROM
+EEPROM je typ nevolatilní paměti, což znamená, že uchovává data i po vypnutí napájení. Pro realizace projektu bylo třeba udělat knihovnu pro čtení a zápis dat do externí EEPROM. 
 ```C
-void initButtons() {
-    DDRD &= ~((1 << C4_PIN) | (1 << D4_PIN) | (1 << E4_PIN) | (1 << F4_PIN) | (1 << G4_PIN) | (1 << A4_PIN) | (1 << B4_PIN)); // piny jako vstupy
-    PORTD |= (1 << C4_PIN) | (1 << D4_PIN) | (1 << E4_PIN) | (1 << F4_PIN) | (1 << G4_PIN) | (1 << A4_PIN);  // nechava port na HIGH je-li nevyuzita
-    PORTB |= (1 << B4_PIN);  // nechava port na HIGH je-li nevyuzit PB0
+#define EEPROM_ADR 0x57 //adresa externí EEPROM na sběrnice I2C
+void eeprom_write_byte(uint16_t address, uint8_t data); //zapis bytu do eeprom
+uint8_t eeprom_read_byte(uint16_t address);//cteni bytu z eeprom
+```
+Dál následuje demonstrace funkce eeprom_write_byte ze souboru eeprom.c. 
+```C
+#include "eeprom.h"
+
+
+void eeprom_write_byte(uint16_t address, uint8_t data)
+// writes one byte to a specific address in EEPROM
+{
+  twi_start();
+
+  twi_write((EEPROM_ADR<<1) | TWI_WRITE);
+
+  twi_write(address>>8);
+
+  twi_write(address&0xFF);
+
+  twi_write(data);
+
+  twi_stop();
 }
 ```
 
-
-## Instrukce k využití
-
+### Realizace obrazovky
+Lavičkový soubor display.h definuje funkce pro ovládání displeje a správu nahrávání na mikrokontroléru AVR s využitím OLED. Obsahuje prototypy funkcí, které se vztahují k nahrávání, přehrávání, mazání a zobrazení informací.
+V hlavičkovém souboru display.h potřebovaly jsme další knihovny:
+```C
+#include <avr/io.h> //umožňuje přístup k portům a konfiguraci vstupů/výstupů
+#include <util/delay.h> // poskytuje funkci _delay_ pro vytvoření časových zpoždění.
+#include <avr/interrupt.h> //zahrnuje definice pro práci s přerušeními a obsahuje makro sei()
+#include "oled.h" //výpis textu a informací na OLED displej
+```
+Dál je uveden přiklad funkce pro obrazovku, která slouží k znázornění tabulky s velikosti 2х4: 
+```C
+void displayTable(uint8_t delky[8]) {
+    char string[3]; //deklarace
+    for (uint8_t i = 0; i < 8; i++) {
+        uint8_t row = i / 2;  //radek
+        uint8_t col = i % 2; //sloupec
+        
+        oled_gotoxy(col * 96, row + 1);  //posun kurzoru
+        oled_putc('0' + (i + 1));  //číslo polozky
+        oled_puts(": ");
+        itoa(delky[i],string, 10); //prevadi vybrany prvek na text
+        oled_puts(string);
+    }
+    oled_display();  //aktualizace obrayovky
+}
+```
 ## Video ukázka 
 [Ukázka vyhotoveného projektu](https://youtu.be/a38iH_rSiO0?si=XspAqUjEJy7-7M6F) 
 
@@ -232,6 +276,3 @@ void initButtons() {
 1.	Xylofon originální vyrobena by Čepek Hlaváč
 2.	Uložené knihovny Digital-Electronics-2 na githubu.
 3.	[ATMEGA328P datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf)
-
-```C
-```
