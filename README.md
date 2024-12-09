@@ -64,103 +64,6 @@ int main(){
   TIM1_ovf_33ms();
   sei();
 ```
-### První mód: hrání 
-Základním modem je hraní. Během daného modu můžeme zahrát jednu z not použitím tlačítka.
-```C
-if(mode_tl > 0){
-      if(subloop == 0){
-        mode++;                       //jestliže nejsme v podfunkci, pak přepneme mod
-        if(mode > 4) mode = 1;
-        sw_mode(mode);
-        mode_tl = 0;                  //zpracovali jsme mode
-      }
-    }
-    if(deb_vyst > 0){  
-      uint8_t track;
-      uint16_t addr = 0; 
-      uint8_t delka;              //jestliže máme nezpracovanou náběžnou hranu funkčního tlačítka
-      switch(mode){                   //dle modu
-        case 1:
-          play(deb_vyst);             //zahrej notu
-          deb_vyst = 0;
-          break;
-...
-}
-}
-```
-### Druhý mód: nahrávaní  
-Během daného modu nahráváme nějakou posloupnost not do paměti EEPROM, po nahrávaní data jsou uloženy v paměti a zobrazeny na obrazovce OLED. 
-```C
-case 2:
-          subloop = 1;                //začni nahrávat
-          uint8_t deb_out = debounce_to_number(deb_vyst);
-          recording(deb_out);
-          addr = 0;
-          addr += (deb_out << 8);     //dle čísla tracku najdi adresu, kde je uložena délka nahrávky
-          deb_vyst = 0;
-          delka = 1;
-          while(subloop > 0){
-            while(sample == 0){_delay_us(1);} //po uběhnutí času 264ms
-            sample = 0;
-            displayPosition(delka);           //zobraz zpracování samplu
-            play(deb_vyst); 
-            eeprom_write_byte(addr + delka, deb_vyst);  //zahrej a ulož noty
-            deb_vyst = 0;
-            delka++;
-            if((delka >= 255) | (mode_tl > 0)){         //když je délka záznamu plná, nebo je ukončeno uživatelem
-              mode_tl = 0;
-              subloop = 0;
-            }
-          }
-          sw_mode(2);                         //vrátíme se na obrazovku výběru
-          eeprom_write_byte(addr, delka);     //zaznamenáme délku v hlavičce záznamu
-          _delay_ms(2000);
-          break;
-```
-### Třetí mód: mazaní  
-Uživatel může smazat vybranou nahrávku z pamětí, vyber jde potvrdit tlačítkem. 
-```C
-case 3:
-          track = debounce_to_number(deb_vyst);
-          deb_vyst = 0;
-          deleteRecord();                       //ujistíme se, zda mazat
-          while ((mode_tl | deb_vyst) == 0) {_delay_us(1);}
-          if(mode_tl){
-            eeprom_write_byte((track << 8), 0);   //jestliže ano, pak délku v hlavičce nastavíme na 0
-            deleted();
-            _delay_ms(2000);
-          }
-          sw_mode(3);                   //vrátíme se obrazovku výběru
-          mode_tl = 0;
-          deb_vyst = 0;
-          break;
-```
-### Čtvrtý mód: přehrání nahrávky  
-Během daného modu jde přehrávání vybrané nahrávky uložené v paměti EEPROM.
-```C
-case 4:
-          track = debounce_to_number(deb_vyst);
-          deb_vyst = 0;
-          addr = 0;
-          addr = (track << 8);
-          delka = eeprom_read_byte(addr);     //získáme z hlavičky záznamu délku záznamu
-          uint8_t pozice = 1;
-          playing(track);                     //zobrazíme stav přehrávání na displeji
-          mode_tl = 0;
-          while((mode_tl == 0) & (pozice <= delka)){    //smyčka končí ve chvíli, kdy jsme přehráli nahrávku, nebo ji ukončí uživatel
-            if(sample == 1){                            //jestliže je povolení od obsluhy přerušení
-              displayPosition(pozice);                  //pak aktualizujeme displej
-              uint8_t tones = eeprom_read_byte(addr + pozice);    //a zahrajeme jeden snímek
-              play(tones);
-              sample = 0;
-              pozice++;                 //inkrementujeme ukazatel pozice
-            }
-          }
-          sw_mode(4);
-          mode_tl = 0;
-          deb_vyst = 0;
-          break;
-```
 ### Rozhodnutí stisknutého tlačítka
 Funkce debounce_to_number slouží k převodu hodnoty vstupní proměnné na číslo, které označuje první aktivní tlačítko (tedy první bit s hodnotou 1).
 ```C
@@ -269,6 +172,112 @@ void displayTable(uint8_t delky[8]) {
     oled_display();  //aktualizace obrayovky
 }
 ```
+### První mód: hrání 
+Základním modem je hraní. Během daného modu můžeme zahrát jednu z not použitím tlačítka.
+```C
+if(mode_tl > 0){
+      if(subloop == 0){
+        mode++;                       //jestliže nejsme v podfunkci, pak přepneme mod
+        if(mode > 4) mode = 1;
+        sw_mode(mode);
+        mode_tl = 0;                  //zpracovali jsme mode
+      }
+    }
+    if(deb_vyst > 0){  
+      uint8_t track;
+      uint16_t addr = 0; 
+      uint8_t delka;              //jestliže máme nezpracovanou náběžnou hranu funkčního tlačítka
+      switch(mode){                   //dle modu
+        case 1:
+          play(deb_vyst);             //zahrej notu
+          deb_vyst = 0;
+          break;
+...
+}
+}
+```
+![digital2_projekt](images/1_autoplay.jpg)
+### Druhý mód: nahrávaní  
+Během daného modu nahráváme nějakou posloupnost not do paměti EEPROM, po nahrávaní data jsou uloženy v paměti a zobrazeny na obrazovce OLED. 
+```C
+case 2:
+          subloop = 1;                //začni nahrávat
+          uint8_t deb_out = debounce_to_number(deb_vyst);
+          recording(deb_out);
+          addr = 0;
+          addr += (deb_out << 8);     //dle čísla tracku najdi adresu, kde je uložena délka nahrávky
+          deb_vyst = 0;
+          delka = 1;
+          while(subloop > 0){
+            while(sample == 0){_delay_us(1);} //po uběhnutí času 264ms
+            sample = 0;
+            displayPosition(delka);           //zobraz zpracování samplu
+            play(deb_vyst); 
+            eeprom_write_byte(addr + delka, deb_vyst);  //zahrej a ulož noty
+            deb_vyst = 0;
+            delka++;
+            if((delka >= 255) | (mode_tl > 0)){         //když je délka záznamu plná, nebo je ukončeno uživatelem
+              mode_tl = 0;
+              subloop = 0;
+            }
+          }
+          sw_mode(2);                         //vrátíme se na obrazovku výběru
+          eeprom_write_byte(addr, delka);     //zaznamenáme délku v hlavičce záznamu
+          _delay_ms(2000);
+          break;
+```
+![digital2_projekt](images/2_record_table.jpg)
+![digital2_projekt](images/3_mode_record.jpg)
+### Třetí mód: mazaní  
+Uživatel může smazat vybranou nahrávku z pamětí, vyber jde potvrdit tlačítkem. 
+```C
+case 3:
+          track = debounce_to_number(deb_vyst);
+          deb_vyst = 0;
+          deleteRecord();                       //ujistíme se, zda mazat
+          while ((mode_tl | deb_vyst) == 0) {_delay_us(1);}
+          if(mode_tl){
+            eeprom_write_byte((track << 8), 0);   //jestliže ano, pak délku v hlavičce nastavíme na 0
+            deleted();
+            _delay_ms(2000);
+          }
+          sw_mode(3);                   //vrátíme se obrazovku výběru
+          mode_tl = 0;
+          deb_vyst = 0;
+          break;
+```
+![digital2_projekt](4_delete_table.jpg)
+![digital2_projekt](5_confirm_delete.jpg)
+![digital2_projekt](6_deleted.jpg)
+### Čtvrtý mód: přehrání nahrávky  
+Během daného modu jde přehrávání vybrané nahrávky uložené v paměti EEPROM.
+```C
+case 4:
+          track = debounce_to_number(deb_vyst);
+          deb_vyst = 0;
+          addr = 0;
+          addr = (track << 8);
+          delka = eeprom_read_byte(addr);     //získáme z hlavičky záznamu délku záznamu
+          uint8_t pozice = 1;
+          playing(track);                     //zobrazíme stav přehrávání na displeji
+          mode_tl = 0;
+          while((mode_tl == 0) & (pozice <= delka)){    //smyčka končí ve chvíli, kdy jsme přehráli nahrávku, nebo ji ukončí uživatel
+            if(sample == 1){                            //jestliže je povolení od obsluhy přerušení
+              displayPosition(pozice);                  //pak aktualizujeme displej
+              uint8_t tones = eeprom_read_byte(addr + pozice);    //a zahrajeme jeden snímek
+              play(tones);
+              sample = 0;
+              pozice++;                 //inkrementujeme ukazatel pozice
+            }
+          }
+          sw_mode(4);
+          mode_tl = 0;
+          deb_vyst = 0;
+          break;
+```
+![digital2_projekt](7_replay_table.jpg)
+![digital2_projekt](8_mode_replay.jpg)
+
 ## Video ukázka 
 [Ukázka vyhotoveného projektu](https://youtu.be/a38iH_rSiO0?si=XspAqUjEJy7-7M6F) 
 
