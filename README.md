@@ -169,7 +169,7 @@ void displayTable(uint8_t delky[8]) {
         itoa(delky[i],string, 10); //prevadi vybrany prvek na text
         oled_puts(string);
     }
-    oled_display();  //aktualizace obrayovky
+    oled_display();  //aktualizace obrazovky
 }
 ```
 ### První mód: hrání 
