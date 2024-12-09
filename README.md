@@ -246,9 +246,9 @@ case 3:
           deb_vyst = 0;
           break;
 ```
-![digital2_projekt](4_delete_table.jpg)
-![digital2_projekt](5_confirm_delete.jpg)
-![digital2_projekt](6_deleted.jpg)
+![digital2_projekt](images/4_delete_table.jpg)
+![digital2_projekt](images/5_confirm_delete.jpg)
+![digital2_projekt](images/6_deleted.jpg)
 ### Čtvrtý mód: přehrání nahrávky  
 Během daného modu jde přehrávání vybrané nahrávky uložené v paměti EEPROM.
 ```C
@@ -275,8 +275,8 @@ case 4:
           deb_vyst = 0;
           break;
 ```
-![digital2_projekt](7_replay_table.jpg)
-![digital2_projekt](8_mode_replay.jpg)
+![digital2_projekt](images/7_replay_table.jpg)
+![digital2_projekt](images/8_mode_replay.jpg)
 
 ## Video ukázka 
 [Ukázka vyhotoveného projektu](https://youtu.be/a38iH_rSiO0?si=XspAqUjEJy7-7M6F) 
