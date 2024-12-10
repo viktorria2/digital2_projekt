@@ -1,7 +1,7 @@
 # Digitální elektronika 2 projekt
 
 ## Elektronicky ovládaný xylofon
-![digital2_projekt](images/zapojeni.png)
+![digital2_projekt](images/zapojeni_bezVodoznaku.png)
 
 ### Team members
 
@@ -25,7 +25,7 @@ Během daného projektu byl využit mikročip ATmega328P, deska Arduino Uno, obr
 -	OLED (soubory: font.h, oled.c, oled.h) – knihovna ke kontrole obrazovky OLED;
 -	DISPLAY (soubory: display.h, display.c) - obsahuje funkce, které zajišťují uživatelské rozhraní zobrazované na OLED displeji;
 -	EEPROM (soubory: eeprom.h, eeprom.c) – slouží k ukládaní a načítaní dat;
--	TWI (soubory: twi.h, twi.c) – knihovna ke komunikaci s periferii pomocí mikrokontroleru;
+-	TWI (soubory: twi.h, twi.c) – knihovna ke komunikaci s periférií pomocí mikrokontroleru;
 -	UART (soubory: uart.h, uart.c) – knihovna ke komunikaci s UART.
 ## Softwarové bloky
 ![digital2_projekt](images/scheme.png)
@@ -76,8 +76,8 @@ uint8_t debounce_to_number (uint8_t vst){
   return 7;
 }
 ```
-### Načítaní délky nahrávky
-Tento program vyžaduje kontrolu délky nahrávky a proto potřebujeme tuto část kódu; slouží k načítání délky nahrávek z EEPROM paměti a zobrazení těchto hodnot v nějaké formě na displeji.
+### Načítání délky nahrávky
+Program vyžaduje kontrolu délky nahrávky a proto potřebujeme tuto část kódu; slouží k načítání délky nahrávek z EEPROM paměti a zobrazení těchto hodnot v nějaké formě na displeji.
 ```C
 if(mode != 1){                //a jestliže to mód vyžaduje
     uint8_t delky_zaz[8];
@@ -91,7 +91,7 @@ if(mode != 1){                //a jestliže to mód vyžaduje
 ### TIMER1_OVF_vect
 Timer1 implementuje přerušení TIMER1_OVF_vect pro mikrokontrolér AVR. Přerušení se spustí při přetečení časovače TIMER1. Hlavním úkolem kódu je debouncing tlačítek a jednoduchý časovač.
 Debouncing: 
-Cílem je eliminovat náhodné rušení při stisknutí tlačítka, známé jako "debouncing". Kód používá tři proměnné: first, second, a third, které uchovávají poslední tři stavy tlačítek. Starší stavy tlačítek se posunou.
+Cílem je eliminovat náhodné rušení při stisknutí tlačítka, známé jako "bouncing". Kód používá tři proměnné: first, second, a third, které uchovávají poslední tři stavy tlačítek. Starší stavy tlačítek se posunou.
 ```C
 // debouncing prvnich osmi tlacitek
   third = second;
@@ -118,11 +118,11 @@ cycle++;
 }
 ```
 ### EEPROM
-EEPROM je typ nevolatilní paměti, což znamená, že uchovává data i po vypnutí napájení. Pro realizace projektu bylo třeba udělat knihovnu pro čtení a zápis dat do externí EEPROM. 
+EEPROM je typ nevolatilní paměti, což znamená, že uchovává data i po vypnutí napájení. Pro realizaci projektu bylo třeba udělat knihovnu pro čtení a zápis dat do externí EEPROM. 
 ```C
-#define EEPROM_ADR 0x57 //adresa externí EEPROM na sběrnice I2C
-void eeprom_write_byte(uint16_t address, uint8_t data); //zapis bytu do eeprom
-uint8_t eeprom_read_byte(uint16_t address);//cteni bytu z eeprom
+#define EEPROM_ADR 0x57 //adresa externí EEPROM na sběrnici I2C
+void eeprom_write_byte(uint16_t address, uint8_t data); //zápis bytu do eeprom
+uint8_t eeprom_read_byte(uint16_t address);//čtení bytu z eeprom
 ```
 Dál následuje demonstrace funkce eeprom_write_byte ze souboru eeprom.c. 
 ```C
@@ -147,15 +147,15 @@ void eeprom_write_byte(uint16_t address, uint8_t data)
 ```
 
 ### Realizace obrazovky
-Lavičkový soubor display.h definuje funkce pro ovládání displeje a správu nahrávání na mikrokontroléru AVR s využitím OLED. Obsahuje prototypy funkcí, které se vztahují k nahrávání, přehrávání, mazání a zobrazení informací.
-V hlavičkovém souboru display.h potřebovaly jsme další knihovny:
+Hlavičkový soubor display.h definuje funkce pro ovládání displeje a správu nahrávání na mikrokontroléru AVR s využitím OLED. Obsahuje prototypy funkcí, které se vztahují k nahrávání, přehrávání, mazání a zobrazení informací.
+V hlavičkovém souboru display.h jsme potřebovali další knihovny:
 ```C
 #include <avr/io.h> //umožňuje přístup k portům a konfiguraci vstupů/výstupů
 #include <util/delay.h> // poskytuje funkci _delay_ pro vytvoření časových zpoždění.
 #include <avr/interrupt.h> //zahrnuje definice pro práci s přerušeními a obsahuje makro sei()
 #include "oled.h" //výpis textu a informací na OLED displej
 ```
-Dál je uveden přiklad funkce pro obrazovku, která slouží k znázornění tabulky s velikosti 2х4: 
+Dál je uveden přiklad funkce pro obrazovku, která slouží k znázornění tabulky o velikosti 2х4: 
 ```C
 void displayTable(uint8_t delky[8]) {
     char string[3]; //deklarace
@@ -198,7 +198,7 @@ if(mode_tl > 0){
 ```
 ![digital2_projekt](images/1_autoplay.jpg)
 ### Druhý mód: nahrávaní  
-Během daného modu nahráváme nějakou posloupnost not do paměti EEPROM, po nahrávaní data jsou uloženy v paměti a zobrazeny na obrazovce OLED. 
+Během daného módu nahráváme nějakou posloupnost not do paměti EEPROM, po nahrávaní jsou data uloženy v paměti a zobrazeny na obrazovce OLED. 
 ```C
 case 2:
           subloop = 1;                //začni nahrávat
@@ -229,7 +229,7 @@ case 2:
 ![digital2_projekt](images/2_record_table.jpg)
 ![digital2_projekt](images/3_mode_record.jpg)
 ### Třetí mód: mazaní  
-Uživatel může smazat vybranou nahrávku z pamětí, vyber jde potvrdit tlačítkem. 
+Uživatel může smazat vybranou nahrávku z paměti, výběr lze potvrdit tlačítkem Mode. 
 ```C
 case 3:
           track = debounce_to_number(deb_vyst);
@@ -250,7 +250,7 @@ case 3:
 ![digital2_projekt](images/5_confirm_delete.jpg)
 ![digital2_projekt](images/6_deleted.jpg)
 ### Čtvrtý mód: přehrání nahrávky  
-Během daného modu jde přehrávání vybrané nahrávky uložené v paměti EEPROM.
+Během daného módu lze přehrávat vybrané nahrávky uložené v paměti EEPROM.
 ```C
 case 4:
           track = debounce_to_number(deb_vyst);
@@ -264,7 +264,7 @@ case 4:
           while((mode_tl == 0) & (pozice <= delka)){    //smyčka končí ve chvíli, kdy jsme přehráli nahrávku, nebo ji ukončí uživatel
             if(sample == 1){                            //jestliže je povolení od obsluhy přerušení
               displayPosition(pozice);                  //pak aktualizujeme displej
-              uint8_t tones = eeprom_read_byte(addr + pozice);    //a zahrajeme jeden snímek
+              uint8_t tones = eeprom_read_byte(addr + pozice);    //a zahrajeme jeden tón
               play(tones);
               sample = 0;
               pozice++;                 //inkrementujeme ukazatel pozice
