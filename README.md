@@ -11,10 +11,10 @@
 * Viktoriia Shishkova – implementace obrazovky, readme soubor.
 
 ## Zadání projektu:
-Vytvořte elektronický xylofon, na který se dá hrát pomocí AVR mikrokontroléru. Projekt bude kombinovat harwarové a softwarové komponenty pro vytvoření interaktivního and programovatelného hudebního nástroje schopného vydávat různé tóny a melodie. Začlenění grafického uživatelského rozhraní (GUI) pro vizualizaci přehrávaných not.
+Vytvořte elektronický xylofon, na který se dá hrát pomocí AVR mikrokontroléru. Projekt bude kombinovat harwarové a softwarové komponenty pro vytvoření interaktivního and programovatelného hudebního nástroje schopného vydávat různé tóny a melodie.
 
 ## Teoretický úvod
-Tento projekt je zaměřen na návrh a realizaci elektronického xylofonu využívajícího AVR mikrokontrolér. Hlavním cílem projektu je vytvořit nástroj, který umožní přehrávání hudby, skladbu melodií a vizualizaci not prostřednictvím grafického uživatelského rozhraní (GUI). AVR mikrokontrolér zde bude plnit roli centrální jednotky, která zpracovává vstupy od uživatele a generuje odpovídající zvukové výstupy.
+Tento projekt je zaměřen na návrh a realizaci elektronického xylofonu využívajícího AVR mikrokontrolér. Hlavním cílem projektu je vytvořit nástroj, který umožní přehrávání hudby a skladbu melodií. AVR mikrokontrolér zde bude plnit roli centrální jednotky, která zpracovává vstupy od uživatele a generuje odpovídající zvukové výstupy.
 AVR je rodina mikrokontrolérů vyvinutá společností Atmel, jsou široce používány v embedded systémech, vývojářských projektech a elektronických zařízeních díky své nízké ceně, flexibilitě a snadnému programování. Má oddelenou paměť pro program a data. Periferie mikrokontroleru jsou vstupní a výstupní piny, AD/DA převodníky, časovače a komunikační rozhrání UART.
 I2C je sériový komunikační protokol používaný pro přenos dat mezi mikrokontrolérem a periferními zařízeními, jako jsou senzory, displeje nebo paměťové moduly.
 ## Popis hardwaru demonstrační aplikace
@@ -26,7 +26,6 @@ Během daného projektu byl využit mikročip ATmega328P, deska Arduino Uno, obr
 -	DISPLAY (soubory: display.h, display.c) - obsahuje funkce, které zajišťují uživatelské rozhraní zobrazované na OLED displeji;
 -	EEPROM (soubory: eeprom.h, eeprom.c) – slouží k ukládaní a načítaní dat;
 -	TWI (soubory: twi.h, twi.c) – knihovna ke komunikaci s periférií pomocí mikrokontroleru;
--	UART (soubory: uart.h, uart.c) – knihovna ke komunikaci s UART.
 ## Softwarové bloky
 ![digital2_projekt](images/scheme.png)
 ### Inicializace 
