@@ -171,7 +171,7 @@ void displayTable(uint8_t delky[8]) {
     oled_display();  //aktualizace obrazovky
 }
 ```
-### První mód: hrání 
+### První mód: hraní 
 Základním modem je hraní. Během daného modu můžeme zahrát jednu z not použitím tlačítka.
 ```C
 if(mode_tl > 0){
@@ -196,7 +196,7 @@ if(mode_tl > 0){
 }
 ```
 ![digital2_projekt](images/1_autoplay.jpg)
-### Druhý mód: nahrávaní  
+### Druhý mód: nahrávání  
 Během daného módu nahráváme nějakou posloupnost not do paměti EEPROM, po nahrávaní jsou data uloženy v paměti a zobrazeny na obrazovce OLED. 
 ```C
 case 2:
