@@ -126,7 +126,8 @@ uint8_t eeprom_read_byte(uint16_t address);//čtení bytu z eeprom
 Používá se EEPROM AT24C32. Na následujícím obrázku z datasheetu lze vidět, jak probíhá zápis bytu na EEPROM:
 ![digital2_projekt](images/eeprom_write.png)
 EEPROM používá 12-bitové adresy. Ty jsou rozdělené na 2 byty, nejprve je poslán MSB poté LSB. Nejvýznamější 4 bity MSB nejsou využívány (don't care bits) 
-Podobně čtení, kde je však neprve nutné poslat "dummy" byte, aby byla načtena adresa, ze které chceme číst. 
+<br/>
+Podobně čtení, kde je však neprve nutné poslat "dummy" byte, aby byla správně načtena adresa, ze které chceme číst. 
 ![digital2_projekt](images/eeprom_read.png)
 
 Dál následuje demonstrace funkce eeprom_write_byte ze souboru eeprom.c. 
@@ -290,3 +291,4 @@ case 4:
 1.	Xylofon originální vyrobena by Čepek Hlaváč
 2.	Uložené knihovny Digital-Electronics-2 na githubu.
 3.	[ATMEGA328P datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf)
+4.	[AT24C32 datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/doc0336.pdf)
