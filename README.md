@@ -124,7 +124,7 @@ void eeprom_write_byte(uint16_t address, uint8_t data); //zápis bytu do eeprom
 uint8_t eeprom_read_byte(uint16_t address);//čtení bytu z eeprom
 ```
 Používá se EEPROM AT24C32. Na následujícím obrázku z datasheetu lze vidět, jak probíhá zápis bytu na EEPROM:
-![digital2_projekt](images/eeprom_write.png)
+![digital2_projekt](images/eeprom_write.png) <br/>
 EEPROM používá 12-bitové adresy. Ty jsou rozdělené na 2 byty, nejprve je poslán MSB poté LSB. Nejvýznamější 4 bity MSB nejsou využívány (don't care bits) 
 <br/>
 Podobně čtení, kde je však neprve nutné poslat "dummy" byte, aby byla správně načtena adresa, ze které chceme číst. 
